@@ -1986,6 +1986,27 @@ contains
        call metadata_set(attname, longname, stdname, units)
     end if
 
+
+   ! Nitrate runoff and leached fluxes (from lnd)
+   ! Copied from ctsm5.1_nitrate/cime/src/drivers/mct/shr/seq_flds_mod.F90
+    call seq_flds_add(l2x_fluxes,"Flrl_no3_runoff")
+   !  call seq_flds_add(l2x_fluxes_to_rof,'Flrl_no3_runoff')
+    call seq_flds_add(x2r_fluxes,"Flrl_no3_runoff")
+    longname = 'NO3 Runoff flux (from lnd)'
+    stdname  = 'NO3_Runoff'
+    units    = 'gN m-2 s-1'
+    attname  = 'Flrl_no3_runoff'
+    call metadata_set(attname, longname, stdname, units)
+
+    call seq_flds_add(l2x_fluxes,"Flrl_no3_leached")
+   !  call seq_flds_add(l2x_fluxes_to_rof,'Flrl_no3_leached')
+    call seq_flds_add(x2r_fluxes,"Flrl_no3_leached")
+    longname = 'NO3 Leached flux (from lnd)'
+    stdname  = 'NO3_Leached'
+    units    = 'gN m-2 s-1'
+    attname  = 'Flrl_no3_leached'
+    call metadata_set(attname, longname, stdname, units)
+
     !-----------------------------
     ! rof->ocn (runoff) and rof->lnd (flooding)
     !-----------------------------

@@ -165,8 +165,12 @@ module seq_diag_mct
   integer(in),parameter :: f_wevap_HDO =37     ! water: evaporation
   integer(in),parameter :: f_wroff_HDO =38     ! water: runoff/flood
   integer(in),parameter :: f_wioff_HDO =39     ! water: frozen runoff
+  integer(in),parameter :: f_no3_runoff =40     ! NO3: runoff
+  integer(in),parameter :: f_no3_leached=41     ! NO3: leached
 
-  integer(in),parameter :: f_size     = f_wioff_HDO   ! Total array size of all elements
+
+!   integer(in),parameter :: f_size     = f_wioff_HDO   ! Total array size of all elements
+  integer(in),parameter :: f_size     = f_no3_leached  ! Total array size of all elements
   integer(in),parameter :: f_a        = f_area        ! 1st index for area
   integer(in),parameter :: f_a_end    = f_area        ! last index for area
   integer(in),parameter :: f_h        = f_hfrz        ! 1st index for heat
@@ -191,7 +195,7 @@ module seq_diag_mct
        ' wfreeze_18O','   wmelt_18O','   wrain_18O','   wsnow_18O',                &
        '   wevap_18O',' wrunoff_18O',' wfrzrof_18O',                               &
        ' wfreeze_HDO','   wmelt_HDO','   wrain_HDO','   wsnow_HDO',                &
-       '   wevap_HDO',' wrunoff_HDO',' wfrzrof_HDO'/)
+       '   wevap_HDO',' wrunoff_HDO',' wfrzrof_HDO','  no3_runoff',' no3_leached'/)
 
   !--- P for period ---
 
@@ -252,6 +256,9 @@ module seq_diag_mct
   integer :: index_l2x_Flrl_rofdto
   integer :: index_l2x_Flrl_rofi
   integer :: index_l2x_Flrl_irrig
+  integer :: index_l2x_Flrl_no3_runoff
+  integer :: index_l2x_Flrl_no3_leached
+
 
   integer :: index_x2l_Faxa_lwdn
   integer :: index_x2l_Faxa_rainc
@@ -271,6 +278,8 @@ module seq_diag_mct
   integer :: index_x2r_Flrl_rofdto
   integer :: index_x2r_Flrl_rofi
   integer :: index_x2r_Flrl_irrig
+  integer :: index_x2r_Flrl_no3_runoff
+  integer :: index_x2r_Flrl_no3_leached
 
   integer :: index_o2x_Fioo_frazil ! currently used by e3sm
   integer :: index_o2x_Fioo_q      ! currently used by cesm
@@ -865,6 +874,9 @@ contains
           index_l2x_Flrl_rofdto = mct_aVect_indexRA(l2x_l,'Flrl_rofdto')
           index_l2x_Flrl_rofi   = mct_aVect_indexRA(l2x_l,'Flrl_rofi')
           index_l2x_Flrl_irrig  = mct_aVect_indexRA(l2x_l,'Flrl_irrig', perrWith='quiet')
+          index_l2x_Flrl_no3_runoff  = mct_aVect_indexRA(l2x_l,'Flrl_no3_runoff')
+          index_l2x_Flrl_no3_leached = mct_aVect_indexRA(l2x_l,'Flrl_no3_leached')
+
 
           index_l2x_Fall_evap_16O    = mct_aVect_indexRA(l2x_l,'Fall_evap_16O',perrWith='quiet')
           if ( index_l2x_Fall_evap_16O /= 0 ) flds_wiso_lnd = .true.
@@ -898,6 +910,9 @@ contains
           if (index_l2x_Flrl_irrig /= 0) then
              nf = f_wroff ; budg_dataL(nf,ic,ip) = budg_dataL(nf,ic,ip) - ca_l*l2x_l%rAttr(index_l2x_Flrl_irrig,n)
           end if
+          nf = f_no3_runoff ; budg_dataL(nf,ic,ip) = budg_dataL(nf,ic,ip) + ca_l*l2x_l%rAttr(index_l2x_Flrl_no3_runoff,n)
+          nf = f_no3_leached; budg_dataL(nf,ic,ip) = budg_dataL(nf,ic,ip) + ca_l*l2x_l%rAttr(index_l2x_Flrl_no3_leached,n)
+
           nf = f_wioff ; budg_dataL(nf,ic,ip) = budg_dataL(nf,ic,ip) - ca_l*l2x_l%rAttr(index_l2x_Flrl_rofi,n)
 
           if ( flds_wiso_lnd )then
@@ -1074,6 +1089,9 @@ contains
        index_x2r_Flrl_rofdto = mct_aVect_indexRA(x2r_r,'Flrl_rofdto')
        index_x2r_Flrl_irrig  = mct_aVect_indexRA(x2r_r,'Flrl_irrig', perrWith='quiet')
        index_x2r_Flrl_rofi   = mct_aVect_indexRA(x2r_r,'Flrl_rofi')
+       index_x2r_Flrl_no3_runoff   = mct_aVect_indexRA(x2r_r,'Flrl_no3_runoff')
+       index_x2r_Flrl_no3_leached  = mct_aVect_indexRA(x2r_r,'Flrl_no3_leached')
+
 
        index_x2r_Flrl_rofl_16O = mct_aVect_indexRA(x2r_r,'Flrl_rofl_16O', perrWith='quiet')
        if ( index_x2r_Flrl_rofl_16O /= 0 ) flds_wiso_rof = .true.
@@ -1100,6 +1118,9 @@ contains
        if (index_x2r_Flrl_irrig /= 0) then
           nf = f_wroff; budg_dataL(nf,ic,ip) = budg_dataL(nf,ic,ip) + ca_r*x2r_r%rAttr(index_x2r_Flrl_irrig,n)
        end if
+       nf = f_no3_runoff;  budg_dataL(nf,ic,ip) = budg_dataL(nf,ic,ip) + ca_r*x2r_r%rAttr(index_x2r_Flrl_no3_runoff,n)
+       nf = f_no3_leached; budg_dataL(nf,ic,ip) = budg_dataL(nf,ic,ip) + ca_r*x2r_r%rAttr(index_x2r_Flrl_no3_leached,n)
+
 
        nf = f_wioff; budg_dataL(nf,ic,ip) = budg_dataL(nf,ic,ip) + ca_r*x2r_r%rAttr(index_x2r_Flrl_rofi,n)
 

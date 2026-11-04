@@ -460,6 +460,14 @@ using a fortran linker.
   </FFLAGS>
 </compiler>
 
+<compiler MACH="derecho">
+  <NETCDF_PATH>$ENV{NETCDF}</NETCDF_PATH>
+  <PNETCDF_PATH>$ENV{PNETCDF}</PNETCDF_PATH>
+  <SLIBS>
+    <append>$SHELL{${NETCDF_PATH}/bin/nf-config --flibs}</append>
+  </SLIBS>
+</compiler>
+
 <compiler MACH="aleph" COMPILER="intel">
   <CONFIG_ARGS>
     <base> --host=Linux </base>

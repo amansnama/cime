@@ -288,6 +288,11 @@ contains
     integer, save :: index_l2x_Flrl_rofdto
     integer, save :: index_l2x_Flrl_rofi
     integer, save :: index_l2x_Flrl_irrig
+    ! 261102: Nitrate runoff and leached fluxes
+    integer, save :: index_l2x_Flrl_no3_runoff	
+    integer, save :: index_l2x_Flrl_no3_leached	
+    integer, save :: index_x2r_Flrl_no3_runoff
+    integer, save :: index_x2r_Flrl_no3_leached
     integer, save :: index_x2r_Flrl_rofsur
     integer, save :: index_x2r_Flrl_rofgwl
     integer, save :: index_x2r_Flrl_rofsub
@@ -337,6 +342,9 @@ contains
        if (have_irrig_field) then
           index_l2x_Flrl_irrig  = mct_aVect_indexRA(l2x_r,'Flrl_irrig' )
        end if
+       ! 261102: Nitrate runoff and leached fluxes
+       index_l2x_Flrl_no3_runoff  = mct_aVect_indexRA(l2x_r,'Flrl_no3_runoff' )
+       index_l2x_Flrl_no3_leached = mct_aVect_indexRA(l2x_r,'Flrl_no3_leached' )
        index_l2x_Flrl_rofi   = mct_aVect_indexRA(l2x_r,'Flrl_rofi' )
        index_x2r_Flrl_rofsur = mct_aVect_indexRA(x2r_r,'Flrl_rofsur' )
        index_x2r_Flrl_rofgwl = mct_aVect_indexRA(x2r_r,'Flrl_rofgwl' )
@@ -346,6 +354,10 @@ contains
        if (have_irrig_field) then
           index_x2r_Flrl_irrig  = mct_aVect_indexRA(x2r_r,'Flrl_irrig' )
        end if
+       ! 261102: Nitrate runoff and leached fluxes
+       index_x2r_Flrl_no3_runoff  = mct_aVect_indexRA(x2r_r,'Flrl_no3_runoff' )
+       index_x2r_Flrl_no3_leached = mct_aVect_indexRA(x2r_r,'Flrl_no3_leached' )
+
        index_l2x_Flrl_rofl_16O = mct_aVect_indexRA(l2x_r,'Flrl_rofl_16O', perrWith='quiet' )
 
        if ( index_l2x_Flrl_rofl_16O /= 0 ) flds_wiso_rof = .true.
@@ -382,6 +394,14 @@ contains
           mrgstr(index_x2r_Flrl_irrig) = trim(mrgstr(index_x2r_Flrl_irrig))//' = '// &
                'lfrac*l2x%Flrl_irrig'
        end if
+
+       ! 261102: Nitrate runoff and leached fluxes
+       mrgstr(index_x2r_Flrl_no3_runoff) = trim(mrgstr(index_x2r_Flrl_no3_runoff))//' = '// &
+       'lfrac*l2x%Flrl_no3_runoff'	   
+       mrgstr(index_x2r_Flrl_no3_leached) = trim(mrgstr(index_x2r_Flrl_no3_leached))//' = '// &
+       'lfrac*l2x%Flrl_no3_leached'
+
+
        if ( flds_wiso_rof ) then
           mrgstr(index_x2r_Flrl_rofl_16O) = trim(mrgstr(index_x2r_Flrl_rofl_16O))//' = '// &
                'lfrac*l2x%Flrl_rofl_16O'
@@ -408,6 +428,9 @@ contains
        if (have_irrig_field) then
           x2r_r%rAttr(index_x2r_Flrl_irrig,i) = l2x_r%rAttr(index_l2x_Flrl_irrig,i) * lfrac
        end if
+       ! 261102: Nitrate runoff and leached fluxes
+       x2r_r%rAttr(index_x2r_Flrl_no3_runoff,i) = l2x_r%rAttr(index_l2x_Flrl_no3_runoff,i) * lfrac
+       x2r_r%rAttr(index_x2r_Flrl_no3_leached,i) = l2x_r%rAttr(index_l2x_Flrl_no3_leached,i) * lfrac
        if ( flds_wiso_rof ) then
           x2r_r%rAttr(index_x2r_Flrl_rofl_16O,i) = l2x_r%rAttr(index_l2x_Flrl_rofl_16O,i) * lfrac
           x2r_r%rAttr(index_x2r_Flrl_rofi_16O,i) = l2x_r%rAttr(index_l2x_Flrl_rofi_16O,i) * lfrac

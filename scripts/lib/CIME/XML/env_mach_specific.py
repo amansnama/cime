@@ -400,11 +400,13 @@ class EnvMachSpecific(EnvBase):
 
     def get_module_system_init_path(self, lang):
         init_nodes = self.get_optional_child("init_path", attributes={"lang":lang}, root=self.get_child("module_system"))
-        return self.text(init_nodes) if init_nodes is not None else None
+        # return self.text(init_nodes) if init_nodes is not None else None
+        return self.get_resolved_value(self.text(init_nodes)) if init_nodes is not None else None
 
     def get_module_system_cmd_path(self, lang):
         cmd_nodes = self.get_optional_child("cmd_path", attributes={"lang":lang}, root=self.get_child("module_system"))
-        return self.text(cmd_nodes) if cmd_nodes is not None else None
+        # return self.text(cmd_nodes) if cmd_nodes is not None else None
+        return self.get_resolved_value(self.text(cmd_nodes)) if cmd_nodes is not None else None
 
     def get_mpirun(self, case, attribs, job, exe_only=False, overrides=None):
         """
